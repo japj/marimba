@@ -1,0 +1,963 @@
+=== Release 0.5.3 ===
+
+Core tags
+
+  Fix: <show> tag was broken - it wasn't displaying the surrounding
+  <span> or any associations
+
+  <show> now handles all kinds of Numeric types
+
+
+DRYML
+
+  DRYML Build cache: reloading unchanged DRYML files in dev mode is
+  now *much* faster.
+
+
+Model extensions
+
+  Fixes to the id_name feature
+
+
+Hobo model controller
+
+  Fix: :permission_denied_response was not supported on several
+  actions
+
+
+Hobo Rapid
+
+  Hobo::Rapid::TYPE_NAMES added - a hash that maps classes to names
+  (symbols) that are used when looking for an editor / form field for
+  a given type. Allows you to extend the <edit> tag to support your
+  own types.
+
+
+=== Release 0.5.2 ===
+
+Misuse of classify changed throughout to camelize. Bugs related to
+certain model names fixed as a result.
+
+Added Hobo::LazyHash. If a value is a proc, the proc is called on the
+first access of that key, and the result of the proc becomes the
+value. These are used in the new controller customisation mechanism.
+
+
+Hobo Rapid
+
+  New ajax options reset_form and refocus_form for ajax forms. Default
+  is true
+
+  toggle: new function like Element.toggle in prototype (Hobo uses the
+  css class 'hidden' instead of an inline 'style' attribute.
+
+  In place editing: various fixes related to HTML/URL encoding.
+
+  New option 'fade' to delete button. Pass fade="#false" to supress
+  the fade effect.
+
+  <hobo_rapid_javascripts> now takes an attribute tiny_mce. Set to
+  true to enable TinyMCE support for html editors.
+
+  <hobo_rapid_javascripts> within the <page> tag now available as
+  inner-tag 'rapid_javascripts'. e.g. you can do
+
+    <page rapid_javascripts.tiny_mce="#true">
+    
+    to enable TinyMCE support.
+
+  Removed helper current_user_in?
+
+  Editors now have a css class added automatically:
+  "<class>_<feild>_editor", e.g. "person_name_editor"
+
+  In place editors now wrap the content in a div if the editor will be
+  a textarea or an html editor (was a span).
+
+  All the buttons now have automatically added css classes like
+  "delete_person_button", "create_person_button".
+
+  create_button now uses any passed field values in the check for
+  create permission.
+
+  object form now has a css class added: either the model class name, or
+  "new_<class>"
+
+  New tag <remote_method_form> for calling remote methods with parameters, either with a traditional 
+
+
+Model Extensions
+
+  Fix to HasManyAssociation#new (didn't support parameters)
+
+  Added block queries to has_many associations,
+  e.g. post.comments.find { published = 1 }
+
+  MyModel[...] equivalent to MyModel.find(...) (Thanks to Jamis Buck's
+  tip on his blog)
+
+  New feature: defined scopes
+
+  Field types set by set_field_type are now inherited
+
+  Model#conditions { ... } generates an sql where clause from a query
+  block.
+
+  Fix to #subclass_associations with has_many :through
+
+  Method #changed_fields? to complement #same_fields?. Useful in
+  permission methods.
+
+
+Integration test extensions
+
+  #visits now can now be given http get parameters
+
+  #deletes added: bob.deletes(some_object)
+
+  #calls_method added: bob.calls_method(object, some_method)
+
+
+General extensions
+
+  #extract_options_from_args! added to Kernel
+
+  Object#is_a? extended to support multiple args:
+
+    if foo.is_a?(Symbol, String)
+
+  _why's metaid added to Object
+
+  Added Hash#map_hash. e.g. a new hash with all values incremented
+  by 1:
+
+    my_hash.map_hash {|k, v| v+1}
+
+
+Controller extensions
+
+  redirect_to can be passed an object, equivalent to
+  redirect_to(object_url(x)), e.g.
+
+    redirect_to current_user.adverts
+
+
+Model controllers
+
+  Removed customisation hooks, create_response,
+  invalid_create_response, update_response etc.
+
+  New mechanism for customising actions. 
+
+    def create
+      hobo_create ...customisation args...
+    end
+
+  web_method, show_method, and publish_collection declarations are now
+  inherited.
+
+
+Helpers
+
+  debug can now be passed multiple values you'd like to inspect
+
+  param_name_for now accepts a string as well as an array for the
+  field path, e.g. param_name_for(current_user, "account.name")
+
+Core tags
+
+  object_link automatically adds a css class "<class>_link",
+  e.g. "person_link"
+
+  Changed default date formatting to to_s(:long) for dates and times.
+
+  New tag transpose_and_repeat, useful for those tables when you wish
+  HTML grouped cells by column instead of by row.
+
+  New tag if_blank
+
+
+Permission system
+
+  Hobo::Undefined#undefined? renamed to hobo_undefined?
+
+  can_edit? now works better with boolean fields
+
+  can_call_<method>? renamed to <method>_callable_by?
+  
+
+DRYML
+
+  Fix: options to inner-tags were leaking through to the HTML output.
+
+  Debug feature -- if the <def> tag has an attribute
+  hobo_debug_source, the generated ERB source will be output to
+  logger.debug
+
+  Dryml now reports an error if a part name occurs more than once
+
+  Inner tag names can now be generated at runtime, this allows
+  e.g. the object_table tag to generate inner-tags on the fly for
+  every editor and label:
+
+    <object_table fields.name_editor.update="my_part" />
+
+  Go read that last one again - it's awesome
+
+New rake tasks
+
+  environments.rake defines tasks like dev, prod, testing so you can
+  e.g.:
+
+    rake prod db:migrate
+
+    (thanks to err.the_blog IIRC)
+
+
+=== Release 0.5.1 ===
+
+Fix to model extensions: hobo_user_model generator could not complete
+because an attempt to access the database before the table exists was
+made.
+
+=== Release 0.5 ===
+
+Tabla theme
+
+  Changed some heading levels to be more logical - e.g. now use H2 and
+  H3 inside a panel instead of H1 and H2
+
+  Various CSS tweaks
+
+  <page>
+
+    Upgraded to use inner tags
+
+    No longer imports public/stylesheets/application.css by default -
+    can easily be added using inner-tags
+
+  <application_nav> and <application_logo> moved into the theme (were
+  in Rapid)
+
+Frontpage generator
+
+  Page templates modified to use <:intro>, <:main> etc
+
+
+hobo_rapid generator
+
+  --import-tags option will add two tags to application.dryml:
+
+    <taglib src="plugins/hobo/tags/rapid"/>
+    <set_theme name="default"/>
+
+
+Plugin initialisation
+
+  Theme no longer set to default in hobo/init.rb. Instead use
+  <set_theme> in application.dryml
+
+
+Core extentions
+
+  Enumerable#map_with_index
+
+
+Ajax Mechanism
+
+  Render parameters (http parameters) are passed in as a hash of
+  requests with numeric keys rather than an array.
+  (e.g. render[1][id]=foo rather than render[][id]=foo
+
+  Hobo.ajaxRequest (javascript) now displays error messages in an
+  alert box. (Known issue: seems to show these twice for some reason)
+
+  In-place-editor support extended to allow other parts to be updated at
+  the same time.
+
+  Automatic mechanism for updating multiple displays of the same field
+  after an in-place-edit
+
+  In-place-editor for html fields will now use TinyMCE if installed
+  (integrated with Ajax.InPlaceEditor)
+
+  Select based ajax editor for numbers, suited for small ranges,
+  e.g. 1 to 10
+
+  Hobo.removeButton (javascript) now supports updating of other parts
+  along with the removal.
+
+  Dom attribute "model_id" renamed to "hobo_model_id"
+
+  Fix to Ajax.InPlaceEditor - no longer removes <p> tags
+
+  before_ajax hook. This method is called immediately before the ajax
+  response is performed. A chance for the controller to make extra
+  instance variabled available to the part methods.
+
+  If a custom JS function is specified for an ajax update
+  (render[...][function]=f), this name is no longer camelised - it is
+  called as-is.
+
+  The object (render[...][object]=...) is now allowed to be nil
+
+  In-place-editor fields now reset automatically to a preset message
+  when the field is blank (e.g. "click to edit")
+
+
+Core helpers
+
+  Fix: object_url gives correct urls when the action is a web-method
+  (controller-name/id/method-name)
+
+  <show> will wrap the displayed content in a <span> with a
+  hobo_model_id. This enables the automatic update of multiple
+  displays of a field value after an ajax edit.
+
+  <show> uses the new type-system added to Hobo models. The main
+  benefit is that values that don't come directly from AR should
+  display without problem, and more types are supported (e.g. float)
+
+  <show> supports a format attribute for numbers:
+    <show attr="price" format="%.2f"/>
+
+  <show> will not display password attributes (e.g. in your model
+  set_field_type :password => :password)
+
+  New tags <show_belongs_to> and <show_has_many> can be overriden to
+  handle the way these relationships are displayed by <show>
+
+  display_name moved into core (was in Rapid, but is needed by <show>)
+
+  display_name uses <show>, so will wrap the name in a span with a
+  hobo_model_id
+
+  <repeat> supports an 'else' attribute, used when the collection is
+  empty.
+
+  Debug methods abort_with and debug are now helpers so they are
+  available from views as well as controllers.
+
+
+User Authentication
+
+  Username validations are customisable - pass a block to
+  set_login_attr and do validations in there. Otherwise default
+  validations are used.
+
+
+Hobo::Controller
+
+  hobo_ajax_reponse will use @this if no page context is passed
+
+  
+Module defined tags
+
+  Can provide a predicate as a block, e.g. to have a different nav bar onced logged in.
+
+      def_tag :nav, (proc {logged_in?}) do ...
+      def_tag :nav do ...
+
+    The tag with no predicate will always take precedence if no
+    predicate is true. If the proc has a single parameter, it is
+    passed the options hash.
+
+
+DRYML
+
+  Changes to taglib cache system. 
+
+  A list of known HTML tags is defined in lib/hobo/static_tags. These
+  are available as an array by calling Hobo.static_tags. Any tags
+  parsed that are not in here are compiled as method calls. Thus the
+  order of tag definitions is no longer as critical, making it easier
+  to split large taglibs into multiple files. As a result, tag modules
+  no longer need to track defined tags in a module variable.
+
+  XML comments now passed through to the generated HTML.
+
+  <set_theme> tag to set current theme. Was previously a configuration
+  variable. This way it is easier to change or disable the theme.
+
+  New feature - inner tags
+
+  <def> now supports alias_current attribute, e.g.
+
+    <def tag="page" alias_current="theme_page">
+
+    This overrides the current <page> definition and makes the old one
+    available as <theme_page>
+
+  <tagbody> supports obj= and attr= at the same time, as with regular
+  tag calls
+
+
+
+Hobo models
+
+  New type system. This is the extended type system that allows you to
+  say, e.g. `set_field_type :intro => :html`. Previously this was
+  returned as a symbol from MyModel.field_type(:intro). The new system
+  uses wrapper types (simple subclasses of String), and modified your
+  model to return these. e.g.
+
+    MyModel.find(:first).intro.class => Hobo::HtmlString
+
+    There are similar types for textile, markdown, passwords, and text
+    (the text type just denotes a longer string, and is used for the
+    'text' sql type).
+
+
+Hobo model controller
+
+  `show_method` renamed to `show_action`
+
+  New class method `publish_collection`. Any `has_many` collections
+  are published automatically. This method allows custom collections,
+  i.e. model methods that return arrays, to be published also.
+
+  create action for an STI base-class controller can now be used to
+  create subclass instances by passing the 'type' parameter.
+
+  update action enhanced to allow a full Hobo ajax-reponse (i.e. part
+  updates) after in-place-edits.
+
+  Controllers can define a `find_for_show` method to provide a custom
+  instance finder, e.g. a chance to perform eager loading.
+
+  Association actions now check for permission to view the association
+  owner
+
+
+Model Queries
+
+  <field>_is predicates now work with belongs_to associations.
+
+
+Hobo Rapid
+
+  rapid.dryml split up into rapid.dryml, rapid_pages.dryml
+  rapid_editing.dryml and rapid_navigation.dryml
+
+  New set of tags for creating navigation bars.
+
+  <no_break> tag replaces spaces with &nbsp; in entire content.
+
+  <edit> tag customisation - for form fields (i.e. new records), will
+  delegate to one of:
+
+      has_many_field
+      belongs_to_field
+
+      string_field
+      textarea_field
+      password_field
+      html_field
+
+      boolean_field
+
+      date_field
+      datetime_field
+
+      integer_field
+      float_field
+
+    Redfine these to customise forms throughout the app.
+
+    Similarly, editor fields (i.e. ajax fields for existing records)
+    use:
+
+      has_many_editor
+      belongs_to_editor
+      
+      string_editor
+      textarea_editor
+      password_editor
+      html_editor
+
+      boolean_editor
+
+      datetime_editor
+      date_editor
+
+      integer_editor
+      float_editor
+
+    Redefine these to customise ajax editors throughout the app.
+
+    Note has_many_field and has_many_editor are just placeholders,
+    they are not implemented.
+
+  <update_button> supports a params attribute, to send extra params
+  along with the HTTP PUT.
+
+  <delete_button> now supports part updates and use of
+  Hobo.removeButton together. (i.e. you can have the fade effect and
+  also have other parts updated)
+
+  <object_form> does not create a hidden field for the STI 'type' field.
+
+
+New feature - Composite models
+
+Experimental new feature - mapping tags
+
+New feature - Predicate dispatch modules 
+
+
+=== Release 0.4.3 ===
+
+Front-controller now filters parameter logging so that passwords are
+not logged.
+
+Check if a controller is a Hobo model-controller before installing
+Hobo routes.
+
+DRYML
+
+  Can now use obj= and attr= on the same tag, so you can e.g.
+
+    <edit obj="#@this" attr="name"/>
+
+  (The alternative, <edit obj="@this.name"> would not work as
+  <edit> needs this_field which would be nil)
+
+  Shorthand obj="page" for obj="#@this"
+
+Various fixes and enhancements to the permission system. Things are somewhat
+experimental and subject to change!
+
+Core tags/helpers
+
+  `viewable` method filters a collection down to objects that are
+  viewable.
+
+
+Hobo Rapid:
+
+  <new_in_collection_page> now includes belongs_to associations in the
+  form.
+
+  Cleanup of form field / editor tags
+
+  <ul_for> and <table_for> now skip non-viewable objects
+
+  Fix: even/odd cycle in table_for and ul_for was broken with nested lists/tables.
+
+  Page navigation enhanced to allow URL query parameters to be
+  maintained from page to page.
+
+  <show_collection_page> now only includes a "New Whatever" link if
+  the collection is a "simple" has_many collection (no conditions, not
+  :through)
+
+  <object_link> now has a view attribute to link to alternate views of
+  the object (see below: alternate show pages)
+
+  <object_table>
+
+    Now allows additional rows to be added by giving a tag-body.
+
+    skip_fields attribute to remove fields from the table
+
+  Better support for confirmation dialogues in <delete_button>
+
+
+Tabla theme:
+
+  Increased width to 800px;
+
+  Small style enhancements
+
+
+Hobo Module
+
+  Fix to dom_id for objects in an array that is not an AR association
+  (e.g. an array returned by find(:all))
+
+
+Support for alternative "show" pages. E.g. to add a "profile" page to a User, add
+
+    show_method :profile
+
+  To the UsersController and create
+  app/views/people/profile.dryml. You also get a named route
+  "user_profile" (e.g. you can call user_profile_url(fred) )
+
+  (Using Hobo Rapid you can link to these with <object_link view="profile"/>)
+
+Fix to template lookup for association pages (e.g. posts/12/comments
+and posts/12/comments/new)
+
+Support for permission class methods (experimental). If you can define
+permission without access to the object state, you can now do so on
+the class:
+
+  def self.viewable_by(viewer, field)
+    false
+  end
+
+  This helps Hobo in places where there is no object. e.g. in deciding
+  whether or not to present a "New Whatsit" link
+
+Fix: pagination was broken on index pages with data-filters.
+
+
+Hobo::ModelController
+
+  Enhanced to allow updating of date and datetime fields. Dates and
+  date-times can be provided either as strings (Hobo will use Chronic
+  for parsing if it's installed) or hashes with :year, :month, :day
+  etc. keys (as used by the select_date helper).
+
+  find_by_data_filter renamed to find_with_data_filter and now does a
+  non-filtered find if no filters were given in the request.
+
+  Added count_with_data_filter
+
+  Fixes to checking create permission when the post parameters
+  contains related sub-objects.
+
+  Access to the new page is forbidden if the current user does not
+  have create permission.
+
+
+Hobo::Model
+
+  New model queries <field>_starts and <field>_ends
+
+  The <field>_is query will now use an "IS NULL" query if you pass
+  nil.
+
+  Added support for counts with queries, e.g:
+
+    User.count { name_starts 't' }
+
+  Calling `new` on a has_many association (e.g. post.comments.new) has
+  enhanced behaviour for new records (those not in the db). Hobo will
+  try to set up the reciprocal belongs_to association on the created
+  object. This is needed by the permission system when testing
+  can_create?
+
+  #reverse_reflection will attempt to find the reciprocal belongs_to
+  association from a has_many association.
+
+
+Ajax mechanism
+
+  Fix when using multiple instances of the same part on the same page
+  (i.e. when a part_id attribute appears in a loop).
+
+  Fix when the this_field for the part context is an array index.
+
+
+Chronic fix to handle dates like "11th Jan" (it can handle "Jan 11th"
+and "11 Jan" but not "11th Jan")
+
+
+New feature - Integration testing DSL. Adds an easy to use DSL for
+integration tests.
+
+Fix: search page in IE
+
+
+
+=== Release 0.4.2 ===
+
+Fix in permission system
+
+
+
+=== Release 0.4.1 ===
+
+New feature: "web-methods" -- RPC style actions in model-controllers. Including
+support for ajax responses.
+
+New named route "home" to FrontController#index
+
+Hobo Rapid:
+
+  Renamed <object_small> to <object_card>
+
+  Added support for ajax responses to web-methods
+
+  Removed <possessive> (too app specific)
+
+  <object_link> now passes extra options to the generated <a> tag
+  (e.g. class, id)
+
+  Extra options to <edit> are now passed on to the delegate.
+
+  Naming of edit controls reworked. <editor> is an ajax editor,
+  <form_field> is a non-ajax form field, <edit> chooses automatically
+  between the two. Other tags renamed too -
+  e.g. <in_place_edit_for_boolean> renamed to
+  <boolean_checkbox_editor>
+
+  Support for datetime and date selects in form fields (not editors)
+
+  Added autosubmit option to autocompleters - submits the form as soon
+  as an option is selected.
+
+  Added confirm option to ajax_updater (wraps call in a JS confirm
+  dialogue)
+
+  More data types supported by <editor> (formerly in_place_edit)
+
+  New tag <belongs_to_editor>. Currently just delegates to
+  <belongs_to_menu_editor> but is intended to switch to an
+  autocompleter if there are too many options for a menu.
+
+  New css classes create_button, update_button, delete_button added to
+  button tags.
+
+  Image attribute for delete_button for <input type="image">
+  buttons. Needs implementing on the other buttons (or maybe we should
+  be using css styling only!)
+
+  New tag: <remote_method_button>
+
+  <object_form> updated to only add hidden tags for fields that don't
+  appear in the form.
+
+hobo_rapid.js
+
+  Fix: in-place-edit controls were displaying the JavaScript source of
+  an alert message after a validation error.
+
+  Support for ajax responses to RPC actions.
+
+  Fix in Hobo.ajaxRequest when no `method` option was given.
+
+  Hobo.applyEvents can now be given an element or a DOM ID.
+
+  Hobo.removeButton: changed duration of Fade effect
+
+  Fix in objectElementFor
+
+  Re-enabled applyEvents in Hobo.updateElement
+
+
+Tabla theme
+
+  Various CSS refinements
+
+  Added account_nav attribute to <page>
+
+  Added class attribute to page - applied to body tag
+
+  Disable account nav if no `login_url` route exists
+
+
+hobo_user_model generator
+
+  Migration
+
+    Changed `login` column to `username`.
+
+    Changed to use Hobo migration syntax
+
+  Model: Uses new `set_login_attr`
+
+
+Plugin initialiser (init.rb)
+
+  Fixed problem with ordering of requires
+
+  Eliminated code to load all models at startup (now done on demand in Hobo module)
+  This reduces the footprint of Hobo, e.g. for apps that want only DRYML.
+
+
+ActiveRecord extensions
+
+  Added HasManyAssociation#new_without_appending. Creates a model with
+  the correct belongs_to association but doesn't add it to the
+  array. Needed for the permission system.
+
+  Added #member_class to HasManyAssociation and
+  HasManyThroughAssociation - convenience method for
+  proxy_reflection.klass
+
+
+General Ruby extensions
+
+  Renamed is_in? to in? to conform with ruby-extensions project.
+
+  Added Module#inheriting_attr_accessor. Creates an attribute accessor
+  that looks in the superclass if the attribute does not exist on
+  self. Should be used on classes (e.g. inside class << self)
+
+
+User Authentication
+
+  The user model can now override the class-method
+  `password_validations` to customise those.
+
+  Virtual fields `password` and `password_confirmation` now declared
+  with field type :password. Hobo Rapid will now generate
+  password-edit fields for these.
+
+  Column used for the user-name is now declared by the user-model
+  class, e.g.
+
+    class User; set_login_attr :email; end
+
+  Extracted acts_as_authenticated controller extensions into
+  Hobo::AuthenticationSupport (was in Hobo::Controller)
+
+  Hobo will manage a last_login_at datetime if such a column exists on
+  the user model.
+
+
+Site-wide search
+
+  Added message when no results found
+
+  Remove objects from results that are not viewable by the current_user
+
+
+Hobo Controller
+
+  Fix: render_tags - hoboParts JavaScript was rendered multiple times
+
+  Ajax mechanism updated to support RPC actions.
+
+
+Core tags & DRYML helpers
+
+  Fix: per-request cache of current_user was not working
+
+  Fix: can_update? was broken
+
+  Fix: can_view_this? handles non-ActiveRecord objects better
+
+  can_view_this? delegates to can_view if this_parent or this_field
+  is null (previously an error).
+
+  Fix: tag_for_object was broken
+
+  <show> supports more field types
+
+  <repeat> now sets the model_id attribute on the repeated element.
+
+  new conditions <unless_blank>, <unless_empty>, <if_can_edit>
+
+  add_classes split into two methods, one that modifies the hash
+  (add_classes!) and one that generates a new one (add_classes)
+
+  Made the new object optional on can_update
+
+  Added a style attribute to <human_type> can be any string method,
+  e.g. pluralize, downcase etc.
+
+
+DRYML
+
+  Form fields that appear within a DRYML form context are now tracked,
+  so that hidden fields can be automatically added for just those
+  fields that do not appear in the form.
+
+  Renamed instance variable to current context to @_this. Was clashing
+  with @this page context.
+
+  Fix: this_type was failing to default to this.class when using the
+  obj="" attribute
+
+  Renamed method _part_context_js to part_context_js
+
+
+Model Extensions (hobo_model)
+
+  Renamed set_fields_types to set_field_type
+
+  Added set_search_columns declaration as a shorthand alternative to
+  defining class method search_columns. e.g.
+
+    class Foo < ActiveRecord::Base
+      hobo_model
+      set_search_columns :content, :notes
+    end
+
+  An id_name with the :underscore option no longer returns the name
+  with underscores by default. By default you get the name as it is in
+  the DB, if you call id_name(true) you get it with underscores
+  instead of spaces (e.g. for use in URLs).
+
+  Added Hobo::Model.set_default_order e.g.
+
+    class User < ActiveRecord::Base
+      set_default_order "name"
+    end 
+
+    To use: User.find(:all, :order => :default). Default order is used
+    by the hobo_model_controller
+
+Model Controller
+
+  Fix: show-collection action (e.g. post/12/comments) now uniquifies
+  the collection if the :uniq option was given on the has_many
+  declaration.
+
+  hobo_render now allows the template to be looked for in other
+  classes (e.g. in app/views/other_class)
+
+  Added web_method declaration for RPC-style actions. e.g.
+
+    class Users < ApplicationController
+      web_method :reset_password
+      def reset_password
+        new_pw = @this.reset_password
+        hobo_ajax_response(@this, :password => new_pw)
+      end
+    end
+
+  show action now calls permission_denied unless the current user can
+  view the object.
+
+  Added customisation hooks create_response, update_response,
+  destroy_response. And for invalid records: invalid_create_response,
+  and invalid_update_response. The default response will only happen
+  if these methods don't do a render or a redirect.
+
+  Added before filter to prepare for a web_method
+
+  Template lookup path changed for
+  collections. e.g. /posts/12/comments will now fallback on
+  app/vews/comments/show_in_collection and /posts/12/comments/12 will
+  fallback on app/views/comments/new_in_collection
+
+  index action respects the model's default_order
+
+Model Queries
+
+  Renamed predicate in_association to is_in
+
+  Added predicate not_in
+
+  Added support for model-defined predicates. Any predicate not found
+  will be looked up on the model class.
+
+Hobo module
+
+  Removed guest_user attribute
+
+  Hobo.models now loads all model classes on demand the first time it
+  is called.
+
+  Removed parentheses from query in find_by_search (SQLite
+  compatibility)
+
+  add_routes now adds routes for web methods
+
+  can_create? uses new_without_appending when passed a has_many
+  association to check if the user is allowed to create an object in
+  that collection.
+
+  can_edit? returns false for polymorphic associations (for now!)
+
+  can_view? can now handle AR classes (can view instances of this
+  class?)  and associations (can view items in this association?)
+
+  Added can_call? permission method for web-methods
+
+Added Rakefile with rdoc task
