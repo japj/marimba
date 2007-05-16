@@ -1,4 +1,13 @@
 ActionController::Routing::Routes.draw do |map|
+
+  map.search  'search', :controller => 'front', :action => 'search'
+  map.homepage '', :controller => 'front', :action => 'index'
+  map.login   'login',  :controller => 'front', :action => 'login'
+  map.logout  'logout',  :controller => 'front', :action => 'logout'
+  map.signup  'signup', :controller => 'front', :action => 'signup'
+
+  Hobo.add_routes(map)
+
   # The priority is based upon order of creation: first created -> highest priority.
   
   # Sample of regular route:
