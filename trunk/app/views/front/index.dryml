@@ -7,14 +7,9 @@
   <:main>
     <panel>
       <div style="margin-left: 40px; ">
-        <h3>Congratulations! Your Hobo Rails App is up and running</h3>
+        <h3>Welcome to Marimba where you can:</h3>
         <ul>
-          <li>To customise this page: edit app/views/front/index.dryml </li>
-
-          <li>To change the nav-bar: define &lt;application_nav&gt;<br/>
-            See vendor/plugins/hobo/tags/rapid.dryml for an example</li>
-
-          <li>To change the logo: define &lt;application_logo&gt;.</li>
+          <li>Manage your Songs (titel, key)</li>
         </ul>
       </div>
     </panel>
