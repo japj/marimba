@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   # --- Hobo Permissions --- #
 
   def super_user?
-    # login == 'admin'
+    login == 'admin'
   end
 
   def creatable_by?(creator)
