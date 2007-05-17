@@ -1,0 +1,21 @@
+<new_page>
+
+    <:main>
+      <panel>
+        <h2>Details</h2>
+        <section>
+          <div class="error_messages">
+            <%= error_messages_for 'this' %>
+          </div>
+
+          <object_form hidden_fields="*">
+            <object_table/>
+            <submit label="Create" class="create_button"/>
+          </object_form>
+        </section>
+      </panel>
+    </:main>
+
+
+</new_page>
+

@@ -1,0 +1,13 @@
+<show_page>
+
+   <:main>
+      <panel>
+        <h2>Details</h2>
+        <section>
+          <object_table/>
+        </section>
+      </panel>
+    </:main>
+
+
+</show_page>
