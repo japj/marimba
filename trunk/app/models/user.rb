@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   end
 
   def viewable_by?(viewer, field)
-    true
+    viewer == ''
   end
 
 
