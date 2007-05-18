@@ -3,3 +3,11 @@
 <taglib src="plugins/hobo/tags/rapid"/>
 
 <set_theme name="default"/>
+
+<def tag="application_nav">
+  <% items = [['Home', urlb + '/']] +
+             [['Songs', object_url(Song)]] +
+             [['PlayLists', object_url(PlayList)]] +
+             [['Search', (search_url rescue "")]] %>
+  <navbar items="#items"/>
+</def>
